@@ -82,7 +82,7 @@ export default defineConfig({
         {
           tex: {
             tags: "ams", // enables auto-numbering + \label/\ref/\eqref
-            packages: { "[+]": ["ams"] },
+            packages: { "[+]": ["ams", "bussproofs"] },
           },
         },
       ],
