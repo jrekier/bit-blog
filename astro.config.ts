@@ -3,6 +3,7 @@ import { defineConfig } from "astro/config";
 import { resolve } from "path";
 import remarkMath from "remark-math";
 import rehypeMathjax from "rehype-mathjax";
+// import rehypeKatex from 'rehype-katex'
 
 import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
@@ -75,7 +76,18 @@ export default defineConfig({
     },
 
     remarkPlugins: [remarkMath],
-    rehypePlugins: [rehypeMathjax],
+    rehypePlugins: [
+      [
+      rehypeMathjax,
+        {
+          tex: {
+            tags: "ams", // enables auto-numbering + \label/\ref/\eqref
+            packages: { "[+]": ["ams"] },
+          },
+        },
+      ],
+    ],
+    // rehypePlugins: [rehypeKatex],
   },
 
   prefetch: {
