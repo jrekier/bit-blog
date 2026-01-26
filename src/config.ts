@@ -13,7 +13,7 @@ export const BASE = "/bit-blog";
 // MORE SETTINGS:
 
 // will be used for the the title and meta tags and in the header (if SITE_NAME is left blank)
-export const SITE_TITLE = "a bit blog";
+export const SITE_TITLE = "Jerem's blog";
 
 // will be used in the meta tags (and for example shown in search results)
 export const SITE_DESCRIPTION = "Trying something.";
