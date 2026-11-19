@@ -22,7 +22,6 @@ export default {
   links: [
     { label: "Bluesky", href: "https://bsky.app/profile/jrekier.bsky.social" },
     { label: "GitHub", href: "https://github.com/jrekier" },
-    { label: "Email", href: "mailto:jrekier@gmail.com" },
   ],
 
   // folders, relative to the repository root
