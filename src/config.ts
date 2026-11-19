@@ -58,6 +58,28 @@ export const SOCIAL_LINKS: {
 };
 
 
+// POSSE: syndicate new posts to other networks after each deploy
+// (see scripts/posse.mjs and ENGINE.md). Credentials are GitHub secrets, not here.
+export const POSSE = {
+  // only posts published on or after this date are syndicated automatically,
+  // so old posts don't all get shared at once
+  SINCE: "2026-11-19",
+  // post to Bluesky as BLUESKY_IDENTIFIER (needs the BLUESKY_APP_PASSWORD secret)
+  BLUESKY: true,
+  // e.g. "https://mathstodon.xyz"; leave empty to skip Mastodon (needs the MASTODON_TOKEN secret)
+  MASTODON_INSTANCE: "",
+  LANG: "en",
+};
+
+// CITATIONS: [@key] citations formatted from your Zotero export (see src/lib/citations.ts)
+export const CITATIONS = {
+  // files Zotero/Better BibTeX keeps updated; missing files are ignored
+  BIBLIOGRAPHY: ["src/references.bib", "src/references.json"],
+  // apa | vancouver | harvard1 | chicago | mla, or a path/URL to any .csl file
+  STYLE: "apa",
+  HEADING: "References",
+};
+
 // EVEN MORE SETTINGS:
 
 // if true, will show theme toggle in header (otherwise theme is automatically detected and can't be changed by the readers)

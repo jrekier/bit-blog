@@ -3,6 +3,7 @@ import { defineConfig } from "astro/config";
 import { resolve } from "path";
 import remarkMath from "remark-math";
 import rehypeMathjax from "rehype-mathjax";
+import { rehypeCitations } from "./src/lib/citations.ts";
 // import rehypeKatex from 'rehype-katex'
 
 import mdx from "@astrojs/mdx";
@@ -77,6 +78,7 @@ export default defineConfig({
 
     remarkPlugins: [remarkMath],
     rehypePlugins: [
+      rehypeCitations,
       [
       rehypeMathjax,
         {

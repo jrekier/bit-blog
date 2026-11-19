@@ -54,6 +54,18 @@ const blog = defineCollection({
     // replace the default og image with a custom one, will also not show the title and description in the og image (add it yourself)
     // has to be in /src/assets folder and has to start with `/src/assets/`
     customOGImage: z.string().optional(),
+
+    // POSSE: set to false to never share this post to Bluesky/Mastodon
+    syndicate: z.boolean().optional(),
+
+    // POSSE: custom text for the Bluesky/Mastodon post (default: title + description)
+    posseText: z.string().optional(),
+
+    // citations: override the citation style for this post (e.g. "chicago")
+    csl: z.string().optional(),
+
+    // citations: references to list in the bibliography without citing them ("@*" for all)
+    noCite: z.array(z.string()).optional(),
   }),
 });
 

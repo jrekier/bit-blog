@@ -66,6 +66,14 @@ const { title, description, image } = Astro.props;
       .MathJax svg {
         display: inline !important;
       }
+
+      /* citations / bibliography */
+      #refs .csl-entry {
+        @apply pl-8 -indent-8 my-2 text-sm;
+      }
+      #refs .csl-entry a, .prose a[href^="#bib-"] {
+        @apply text-accent-600 dark:text-accent-400;
+      }
     </style>
   </head>
 
