@@ -12,7 +12,7 @@
 // Usage:
 //   node scripts/posse.mjs                 # syndicate from the live site
 //   node scripts/posse.mjs --dry-run       # show what would be posted, post nothing
-//   node scripts/posse.mjs --local         # read dist/posse.json (after `npm run build`)
+//   node scripts/posse.mjs --local         # read _site/posse.json (after `npm run build`)
 //   node scripts/posse.mjs --only <slug>   # consider only this post
 //
 // Environment (GitHub repo secrets in CI, or a local .env you `source`):
@@ -20,8 +20,8 @@
 //   BLUESKY_SERVICE        optional, your PDS (default https://bsky.social)
 //   MASTODON_TOKEN         optional, access token with write:statuses + read:accounts
 //
-// Handles, the Mastodon instance and the cutoff date live in src/config.ts
-// (POSSE section) and are published inside posse.json.
+// Handles, the Mastodon instance and the cutoff date live in engine/config.mjs
+// (posse section) and are published inside posse.json.
 
 import { readFile, appendFile } from "node:fs/promises";
 
@@ -38,15 +38,13 @@ const summary = [];
 // ---------------------------------------------------------------------------
 
 async function siteUrlFromConfig() {
-  const src = await readFile(new URL("../src/config.ts", import.meta.url), "utf8");
-  const site = src.match(/export const SITE\s*=\s*["'`]([^"'`]+)["'`]/)?.[1];
-  if (!site) throw new Error("Could not find SITE in src/config.ts");
-  return site.replace(/\/$/, "");
+  const { default: config } = await import("../engine/config.mjs");
+  return (config.origin + config.base).replace(/\/$/, "");
 }
 
 async function loadFeed() {
   if (LOCAL) {
-    const raw = await readFile(new URL("../dist/posse.json", import.meta.url), "utf8");
+    const raw = await readFile(new URL("../_site/posse.json", import.meta.url), "utf8");
     return JSON.parse(raw);
   }
   const url = `${await siteUrlFromConfig()}/posse.json?t=${Date.now()}`;

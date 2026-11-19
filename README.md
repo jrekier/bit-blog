@@ -1,92 +1,89 @@
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://github.com/user-attachments/assets/18bd5c7e-3f45-4485-b4e8-6f0a45ca931d">
-  <source media="(prefers-color-scheme: light)" srcset="https://github.com/user-attachments/assets/98d51208-2332-43e9-9ffb-787597644862">
-  <img alt="Screenshot of blog template, main page." src="https://github.com/user-attachments/assets/98d51208-2332-43e9-9ffb-787597644862">
-</picture>
+# bit-blog
 
-[LIVE DEMO](https://flo-bit.dev/blog-template/)
+Source of [jrekier.github.io/bit-blog](https://jrekier.github.io/bit-blog/). Markdown in, static HTML out,
+built by a small engine in [`engine/`](engine/README.md) and deployed to GitHub Pages on every push to `main`.
 
-# astro blog template
+```sh
+npm ci           # install exactly what package-lock.json lists (once, and after dependency updates)
+npm run dev      # preview at http://localhost:4321/bit-blog/ with live reload
+npm run build    # full build into _site/
+```
 
-minimalistic but opinionated blog template using [astro](https://astro.build/) and [svelte](https://svelte.dev/). aims to be super easy to deploy and use, with a focus on performance and SEO, ease-of-use and design.
+## Writing
 
-See a [live demo here](https://flo-bit.dev/blog-template/) (also doubles as a tutorial on how to use this template).
+Posts are `src/content/blog/YYYY-MM-DD-slug.md`; the file name, lowercased, becomes the URL.
+Files starting with `_` are ignored (see `_citation-example.md`). Images go in `src/assets/posts/`
+and are referenced relatively: `![alt](../../assets/posts/figure.png)`.
 
-Features:
+```yaml
+---
+title: "…"
+description: "…"            # shown in lists, link cards and the Bluesky post
+pubDate: "November 19 2026"
+tags: ['physics']
+# optional:
+updatedDate: "…"
+published: false             # draft: not built
+hidden: true                 # built, but not listed anywhere (share the link privately)
+syndicate: false             # never post this to Bluesky/Mastodon
+posseText: "…"               # custom text for the Bluesky/Mastodon post
+csl: chicago                 # citation style for this post only
+noCite: ["@key"]             # in the bibliography without being cited
+disableComments: true
+disableLikes: true
+---
+```
 
-- ✅ 100/100 Lighthouse performance
-- ✅ SEO-friendly with canonical URLs and OpenGraph data (automatically generated)
-- ✅ Sitemap support
-- ✅ RSS Feed support
-- ✅ Markdown support
-- ✅ Pagination
-- ✅ Syntax highlighting (+ copy button)
-- ✅ Dark and light mode with toggle button or auto-detect
-- ✅ Search included
-- ✅ Tags for posts
-- ✅ Super easy to deploy as a static site
-- ✅ Includes some prebuilt components for you to use
-- ✅ Easy to edit by editing the markdown directly
-- ✅ Comments and likes via bluesky
+Math is LaTeX between `$…$` / `$$…$$`, rendered by MathJax at build time (`\label`/`\eqref` work).
+Settings for the whole site are in [`engine/config.mjs`](engine/config.mjs).
 
-## tutorials
+## Citations from Zotero
 
-the demo blog doubles as a tutorial on how to use this template:
+**Setup, once:** install [Better BibTeX](https://retorque.re/zotero-better-bibtex/) in Zotero, then right-click your
+library (or a "Blog" collection) → *Export…* → **Better BibTeX**, tick **Keep updated**, and save it over
+`src/references.bib`. Zotero then rewrites that file whenever you add or edit a reference; commit it with your posts.
+(A **Better CSL JSON** export to `src/references.json` also works.)
 
-- [quick start with github pages](https://flo-bit.dev/blog-template/posts/how-to-use)
+**In a post:**
 
-- [adding content](https://flo-bit.dev/blog-template/posts/adding-content)
+| You write | You get (APA) |
+|---|---|
+| `[@kepler1609]` | (Kepler, 1609) |
+| `[@misner1973, chap. 8]` | (Misner et al., 1973, Chapter 8) |
+| `[@a; @b]` | both, in one parenthesis |
+| `@misner1973 showed` | Misner et al. (1973) showed |
+| `[-@misner1973]` | (1973) |
 
-- [comments and likes via bluesky](https://flo-bit.dev/blog-template/posts/comments-via-bluesky)
+Keys are the ones Better BibTeX shows in Zotero. The bibliography goes at the end, or where you put `[^ref]` on its own line.
+Unknown keys produce a build warning. Style: `citations.style` in `engine/config.mjs` (`apa`, `chicago`, `vancouver`, `harvard1`, `mla`,
+or the path/URL of any `.csl` file from the [CSL styles repository](https://github.com/citation-style-language/styles)).
 
-## quick start with github pages in 5 minutes
+## POSSE: sharing posts on Bluesky
 
-1. Fork [the repository of this blog](https://github.com/flo-bit/blog-template) 
+After each deploy, the `syndicate` job runs [`scripts/posse.mjs`](scripts/posse.mjs), which:
 
-- Either name your fork `<github-username>.github.io` if you want your blog to live at `<github-username>.github.io` 
+1. reads `/posse.json` from the live site (every published, non-hidden post);
+2. keeps posts dated on or after `posse.since` in `engine/config.mjs` without `syndicate: false`;
+3. skips any article already linked from your recent Bluesky posts (so it never double-posts);
+4. posts the rest with a link card (title, description, preview image).
 
-- Or choose any other repo name and it will live at `<github-username>.github.io/<repo-name>`
+Comments and likes under each article come from that Bluesky thread, loaded live in the reader's browser.
 
-2. In your repository settings, set up github pages to deploy using github actions (_SETTINGS_ -> _PAGES_ -> _SOURCE_: **Github Actions**)
+**Setup, once:** Bluesky → Settings → Privacy and security → **App passwords** → create one, then add it as a
+repository secret named `BLUESKY_APP_PASSWORD` (GitHub → Settings → Secrets and variables → Actions).
+For Mastodon, set `posse.mastodonInstance` in `engine/config.mjs` and add a `MASTODON_TOKEN` secret
+(an app token with `read:accounts write:statuses`). Without secrets, the job reports "not configured" and passes.
 
-3. Set up your blog info in `src/config.ts`, most importantly the `SITE` and `BASE` variables:
+```sh
+npm run posse:dry                                   # what would be posted
+npm run build && node scripts/posse.mjs --local --dry-run
+BLUESKY_APP_PASSWORD=… npm run posse -- --only <post-id>   # post one by hand
+```
 
-- `SITE`: set to `https://<github-username>.github.io`
-- `BASE`: if repo name is `<github-username>.github.io` set to `/`, otherwise set to `/<repo-name>`
+## Dependencies
 
-4. Once you push your changes to main your blog should be live in about 1-2 minutes at 
-`<github-username>.github.io` or `<github-username>.github.io/<repo-name>`
+17 direct packages, all listed in `package.json` with exact versions. `.npmrc` turns off install scripts, and
+Dependabot (`.github/dependabot.yml`) proposes updates weekly, ignoring releases less than a week old.
+Check with `npm audit`. The remaining low-severity KaTeX advisory concerns code this site never runs.
 
-5. Set up more info in `src/config.ts` (see [all options here](https://flo-bit.dev/blog-template/posts/configuring-the-blog))
-
-- `SITE_TITLE` is the title of your blog, and will be shown in the header and in search results
-- `SITE_DESCRIPTION` is the description of your blog, and will be shown e.g. in search results
-- `SITE_FAVICON` is the emoji that will be shown as favicon of your blog (will be shown in the header and as favicon)
-- `NAME` is the name of the author of the blog, will be shown in the footer as `(c) <YEAR> <NAME> - LICENSE`
-- `BLUESKY_IDENTIFIER` is your bluesky handle (without the `@`), this is needed for likes and comments to work 
-(see [comments via bluesky](https://flo-bit.dev/blog-template/posts/comments-via-bluesky))
-- `SOCIAL_LINKS` set your social media links here, e.g. `{ BLUESKY_URL: "https://bsky.app/profile/flo-bit.dev" }` 
-will be shown in the footer of the blog
-
-6. Edit `about.mdx` in `src/content/info/` to add your own about page.
-
-7. Remove all files from `src/content/blog/` and add your own blog posts there. Time to write your first blog post! 
-(see [adding content](https://flo-bit.dev/blog-template/posts/adding-content) for more info)
-
-8. Anytime you push to the main branch, your blog will automatically be updated (should usually take less than 2 minutes). 
-You can also go to the github actions tab to check the progress/status.
-
-If you run into any issues, feel free to [open an issue](https://github.com/flo-bit/blog-template/issues) or 
-[contact me on bluesky](https://bsky.app/profile/flo-bit.dev)
-
-## Notes
-
-Search currently only works in production mode (i.e. when running `npm run build`) not in dev mode (`npm run dev`).
-
-## Credits
-
-Adopted from the default astro blog template when running `npm create astro@latest`.
-
-## License
-
-MIT.
+Originally based on [flo-bit/blog-template](https://github.com/flo-bit/blog-template) (MIT).

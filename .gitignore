@@ -1,7 +1,6 @@
 # build output
-dist/
-# generated types
-.astro/
+_site/
+.cache/
 
 # dependencies
 node_modules/
@@ -23,7 +22,3 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 
-public/pagefind/
-# new engine
-_site/
-.cache/

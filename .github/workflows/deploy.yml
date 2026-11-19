@@ -4,23 +4,31 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
-  schedule:
-    - cron: "0 */12 * * *" # every 12 hours
 
 permissions:
   contents: read
   pages: write
   id-token: write
 
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout your repository using git
-        uses: actions/checkout@v4
-
-      - name: Install, build, and upload your site
-        uses: withastro/action@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      # installs exactly what package-lock.json lists; .npmrc disables install scripts
+      - run: npm ci
+      - run: node engine/build.mjs
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
 
   deploy:
     needs: build
@@ -43,6 +51,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      # posse.mjs has no dependencies, so no npm install here
       - name: Syndicate new posts
         run: node scripts/posse.mjs
         env:
