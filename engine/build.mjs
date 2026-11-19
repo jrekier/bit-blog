@@ -244,12 +244,13 @@ async function main() {
     const content = await render(body, { path: file, frontmatter: data });
     await write(`${id}/index.html`, T.simplePage(site, { title: data.title ?? id[0].toUpperCase() + id.slice(1), path: `${id}/`, content, active: id }));
   }
+  if (config.about) await write("about/index.html", T.redirectPage(site, config.about));
   await write("search/index.html", T.searchPage(site));
   await write("404.html", T.notFoundPage(site));
 
   // feeds
   await write("rss.xml", T.rss(site, listed));
-  await write("sitemap-0.xml", T.sitemap(site, ["", "about/", ...listed.map((p) => p.path), ...tags.map((t) => `tags/${t}/`)]));
+  await write("sitemap-0.xml", T.sitemap(site, ["", ...listed.map((p) => p.path), ...tags.map((t) => `tags/${t}/`)]));
   await write("sitemap-index.xml", T.sitemapIndex(site));
   await write("posse.json", JSON.stringify(posseFeed(listed), null, 2));
 

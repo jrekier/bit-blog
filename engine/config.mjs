@@ -14,6 +14,10 @@ export default {
   lang: "en",
   license: "MIT licensed.",
 
+  // "About" in the header goes here; /about/ on the blog redirects to it.
+  // For now that's the About page of the personal site.
+  about: "https://jrekier.github.io/about",
+
   // shown in the footer
   links: [
     { label: "Bluesky", href: "https://bsky.app/profile/jrekier.bsky.social" },
@@ -24,7 +28,7 @@ export default {
   // folders, relative to the repository root
   paths: {
     posts: "src/content/blog", // *.md; files starting with _ are ignored
-    pages: "src/content/info", // about.md(x) -> /about/
+    pages: "src/content/info", // other standalone pages: foo.md -> /foo/ (optional folder)
     images: "src/assets", // copied (and converted to WebP) on build
     out: "_site",
     cache: ".cache", // optimized images, safe to delete

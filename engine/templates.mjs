@@ -45,7 +45,7 @@ export function layout(site, { title, description, path, image, body, type = "we
 <body>
 <header class="site-header">
   <a class="brand" href="${site.url("")}"><span aria-hidden="true">${c.favicon}</span> ${esc(c.title)}</a>
-  <nav>${nav("", "Blog", "blog")} ${nav("about/", "About", "about")} ${nav("search/", "Search", "search")} <a href="${site.url("rss.xml")}">RSS</a></nav>
+  <nav>${nav("", "Blog", "blog")} <a href="${c.about}">About</a> ${nav("search/", "Search", "search")} <a href="${site.url("rss.xml")}">RSS</a></nav>
 </header>
 <main>
 ${body}
@@ -134,9 +134,12 @@ export function searchPage(site) {
   });
 }
 
+/** `to` is a path on this site ("tags/math/") or a full URL. */
 export function redirectPage(site, to) {
-  const url = site.url(to);
-  return html`<!doctype html><meta charset="utf-8"><title>Redirecting…</title><meta http-equiv="refresh" content="0; url=${url}"><link rel="canonical" href="${site.abs(to)}"><a href="${url}">${url}</a>`;
+  const external = /^https?:\/\//.test(to);
+  const url = external ? to : site.url(to);
+  const canonical = external ? to : site.abs(to);
+  return html`<!doctype html><meta charset="utf-8"><title>Redirecting…</title><meta http-equiv="refresh" content="0; url=${esc(url)}"><link rel="canonical" href="${esc(canonical)}"><a href="${esc(url)}">${esc(url)}</a>`;
 }
 
 export function notFoundPage(site) {
