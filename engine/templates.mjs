@@ -30,7 +30,9 @@ export function layout(site, { title, description, path, image, body, type = "we
 <title>${esc(fullTitle)}</title>
 <meta name="description" content="${esc(description ?? c.description)}">
 <link rel="canonical" href="${canonical}">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>${c.favicon}</text></svg>">
+<link rel="icon" type="image/png" sizes="32x32" href="${c.icons}/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="${c.icons}/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="${c.icons}/apple-touch-icon.png">
 <link rel="alternate" type="application/rss+xml" title="${esc(c.title)}" href="${site.url("rss.xml")}">
 <link rel="sitemap" href="${site.url("sitemap-index.xml")}">
 <link rel="stylesheet" href="${site.url(`style.css?v=${site.version}`)}">
@@ -44,15 +46,15 @@ export function layout(site, { title, description, path, image, body, type = "we
 </head>
 <body>
 <header class="site-header">
-  <a class="brand" href="${site.url("")}"><span aria-hidden="true">${c.favicon}</span> ${esc(c.title)}</a>
-  <nav>${nav("", "Blog", "blog")} <a href="${c.about}">About</a> ${nav("search/", "Search", "search")} <a href="${site.url("rss.xml")}">RSS</a></nav>
+  <a class="brand" href="${c.home.href}"><img src="${site.url("geology.svg")}" alt="" width="36" height="36"> ${esc(c.home.label)}</a>
+  <nav>${nav("", "Blog", "blog")} <a href="${c.about}">About</a></nav>
 </header>
 <main>
 ${body}
 </main>
 <footer class="site-footer">
   <p>© ${new Date().getFullYear()} ${esc(c.author)} · ${esc(c.license)}</p>
-  <p>${c.links.map((l) => html`<a href="${l.href}">${esc(l.label)}</a>`).join(" · ")}</p>
+  <p>${[{ label: "Search", href: site.url("search/") }, { label: "RSS", href: site.url("rss.xml") }, ...c.links].map((l) => html`<a href="${l.href}">${esc(l.label)}</a>`).join(" · ")}</p>
 </footer>
 ${site.dev ? '<script src="/__reload.js"></script>' : ""}
 </body>

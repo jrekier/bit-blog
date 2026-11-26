@@ -225,7 +225,7 @@ async function main() {
   }
 
   // lists
-  await write("index.html", T.postList(site, { posts: listed, path: "", active: "blog" }));
+  await write("index.html", T.postList(site, { heading: `<span aria-hidden="true">${config.favicon}</span> ${T.esc(config.title)}`, posts: listed, path: "", active: "blog" }));
   const tags = [...new Set(listed.flatMap((p) => p.tags))].sort();
   for (const tag of tags) {
     const tagged = listed.filter((p) => p.tags.includes(tag));
@@ -258,7 +258,7 @@ async function main() {
   if (!DEV) await buildOgImages(posts);
 
   // static assets
-  for (const f of ["style.css", "bluesky.js"]) await copyFile(join(root, "engine/assets", f), join(P.out, f));
+  for (const f of ["style.css", "bluesky.js", "geology.svg"]) await copyFile(join(root, "engine/assets", f), join(P.out, f));
 
   if (SEARCH) await buildSearchIndex();
 

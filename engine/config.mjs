@@ -10,7 +10,14 @@ export default {
   description: "Trying something.",
   author: "jerem.", // footer: © <year> <author>
 
-  favicon: "🐰",
+  favicon: "🐰", // in front of the title on the list of posts
+  // the browser-tab icon is the personal site's (the Earth cutaway), served from its root
+  icons: "https://jrekier.github.io",
+
+  // the header is the personal site's: its name at the top left, linking to its home page
+  // (the blog's own title, with the bunny, heads the list of posts)
+  home: { label: "Jérémy Rekier", href: "https://jrekier.github.io/" },
+
   lang: "en",
   license: "MIT licensed.",
 
@@ -18,7 +25,7 @@ export default {
   // For now that's the About page of the personal site.
   about: "https://jrekier.github.io/about",
 
-  // shown in the footer
+  // shown in the footer, after Search and RSS
   links: [
     { label: "Bluesky", href: "https://bsky.app/profile/jrekier.bsky.social" },
     { label: "GitHub", href: "https://github.com/jrekier" },

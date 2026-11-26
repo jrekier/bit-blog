@@ -7,21 +7,21 @@ pubDate: "March 18 2026"
 ---
 
 *Theia* is a **fictional** Earth-size moon world in synchronous orbit around its parent planet, *Jove*. In order to reproduce the day-night cycles of the Earth, the Moon’s orbit period is chosen equal to 1 Earth Day. Kepler’s third law related the mean orbital frequency of the moon, $n=2\pi/T$, to the semi-major axis of its orbit and reads (assuming that Jove is much heavier than Theia):
-$
+$$
 \begin{align}
 &n^2=\frac{GM}{a^3}\nonumber\\
 \leftrightarrow\,&a=R\left(\frac{G}{3\pi}\bar{\rho}\right)^{1/3}T^{2/3},
 \end{align}
-$
+$$
 where $\bar{\rho}$ is the mean density of the planet, and $R$ is its radius. 
 
 The synchronous orbit creates an interesting situation where Jove is always visible from one side of Theia’s surface, and never visible from the other side. Its angular diameter in the sky can be shown equal to:
-$
+$$
 \begin{align}
 \theta&=2\arctan\left(R/a\right)\nonumber\\
 &=2\arctan\left[\left(\frac{3\pi}{G\bar{\rho}T^2}\right)^{1/3}\right].
 \end{align}
-$
+$$
 Very interestingly, we see that the apparent size depends only on the planet’s density, and on the orbital period of the moon. Setting the latter to one Earth Day, the following plot gives the angular diameter as a function of the planet’s density. I have added planets of the solar system as vertical lines for reference:
 ![angular diameter](../../assets/posts/angular_diameter.png)
 
